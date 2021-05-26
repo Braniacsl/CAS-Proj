@@ -1,20 +1,24 @@
-Player player = new Player(new PVector(250, 250)); // Main loop which will handle level picker. Right now main is the whole temp scene to test basic concepts
+public static final int[] windowSize = new int[] {750, 750};
+
+void settings(){
+  size(windowSize[0], windowSize[1]);
+}
 
 void setup(){
-  size(500, 500);
   noStroke();
+  frameRate(60);
+  SceneManager.addScene(new Test(0));
+  SceneManager.setCurrentScene(0);
 }
 
 void draw(){
   background(0);
-  
-  player.update();
-  
-  player.render();
+
+  SceneManager.draw();
   
 } 
 
 void keyPressed(){
-  this.player.addKey(key+"");
+  SceneManager.keyPressed(key+"");
 }
   
