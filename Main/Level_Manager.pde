@@ -36,6 +36,10 @@ static class SceneManager {
     currentScene.keyPressed(key);
   }
   
+  public static void setGridSpace(int[] pos, Object obj){
+    currentScene.grid[pos[0]][pos[1]] = obj;
+  }
+  
 }
 
 //The scene class is abstract as every level or menu will be using it and thus it is easier to have an object scene instead of multiple different classes. Basically, it allows me to have an array of scenes as well as a currentscene variable without hassle.
@@ -46,6 +50,11 @@ abstract class Scene {
   
   public void createGrid(){
     grid = new Object[gridSize[0]][gridSize[1]];
+    for(int i = 0; i < grid.length; i++){
+      for(int j = 0; j < grid[i].length; j++){
+        this.grid[i][j] = null;
+      }
+    }
   }
   
   public abstract void setup();

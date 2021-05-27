@@ -4,16 +4,20 @@ This is the test scene for movement, entity behavior etc. It is used to test any
 
 
 class Test extends Scene {
-  int instance = 0;
   Player player;
 
   
   void setup(){
-    gridSize[0] = gridSize[1] = 5;
+    gridSize[0] = gridSize[1] = 5; //Sets the gridSize
     
-    player = new Player(new int[] {0, 0}, gridSize);
+    player = new Player(new int[] {0, 0}, gridSize); //instantiates the player
     
-    createGrid();
+    createGrid(); //Creates the grid
+    
+    this.grid[0][0] = player;
+    this.grid[2][0] = "wall";
+    this.grid[3][1] = "wall";
+    this.grid[1][2] = "wall";
   }
   
   void draw(){
@@ -21,13 +25,19 @@ class Test extends Scene {
     
     stroke(255);
     
-    //This simply renders the grid. Only for testing purposes
-    for(int i = 1; i <= gridSize[0]; i++){
+    //This render any 
+    for(int i = 0; i < this.gridSize[0]; i++){
       float steps = windowSize[0]/gridSize[0];
       line(steps * i, 0, steps* i, windowSize[1]);
       line(0, steps * i, windowSize[0], steps*i);
+      for(int j = 0; j < this.gridSize[1]; j++){
+        if(this.grid[i][j] == "wall"){
+          rect(i*steps, j*steps, steps, steps);
+        }
+      }
     }
     
+    //Calling the draw and update functions of the player
     player.update();
     
     player.render();
@@ -35,10 +45,7 @@ class Test extends Scene {
   } 
   
   void keyPressed(String key){
+    //Sends key presses to the player
     this.player.addKey(key+"");
-  }
-  
-  public Test(int instance){
-    this.instance = instance;
   }  
 }
