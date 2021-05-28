@@ -24,4 +24,3 @@ void draw(){
 void keyPressed(){
   SceneManager.keyPressed(key+""); //Sends any key press to the scenemanager
 }
-  

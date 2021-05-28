@@ -2,22 +2,25 @@ import java.util.List;
 import java.lang.Math;
 
 /*
-This file contains the code for the player character. Before it was to contain all the code for the game, however the file would be too big and less readable
+This file contains the code for the player character. Before it was to contain all the code for the entities in the game, however the file would be too big and less readable
 */
 
 class Player extends Entity{ //The player class    
-  private List<String> keysPressed = new ArrayList<String>();
+  private List<String> keysPressed = new ArrayList<String>(); //The list of keypresses inputted by the player
   
+  //The constructor for the player
   public Player(int[] pos, int[] gridSize){
-    super(pos, gridSize);
+    super(pos, gridSize, new PVector(100, 100));
   }
   
+  //adds a key to the list
   public void addKey(String k){
     keysPressed.add(k);
   }
   
+  //THis function updates the characters position based on player input
   public void update(){
-    //The next two lines take the last keypressed out of the list and then remove it. Also, it ensures that no new inputs can be made if the character still moving to a new cell.
+    //This block is used to get the key pressed. First it checks if the player is stationary so it can move, then gets the key. If they key isnt null the character moves and the list is cleared.
     String k = "";
     if(!this.moving){
       k = keysPressed.isEmpty() ? "" : keysPressed.get(0);        
