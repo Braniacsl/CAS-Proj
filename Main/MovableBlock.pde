@@ -12,18 +12,18 @@ class Block extends Entity {
   public void update(){
     Player player = SceneManager.currentScene.player; //Gets the player for calculations
     
-    if(this.currentCell[0] == player.currentCell[0] && this.currentCell[1] == player.currentCell[1]){ //Checks if the player is moving toward the block, and if so the block will initiate movement in that direction.
-      if(player.direction == "down"){
+    if(this.currentCell[0] == player.currentCell[0] && this.currentCell[1] == player.currentCell[1] && player.moving){ //Checks if the player is moving toward the block, and if so the block will initiate movement in that direction.
+      if(player.direction == "down" && this.currentCell[1] != this.gridSize[1]){
         this.currentCell[1] += 1;
         this.direction = "down";
         this.moving = true;
       }
-      else if(player.direction == "up"){
+      else if(player.direction == "up" && this.currentCell[1] != -1){
         this.currentCell[1] -= 1;
         this.direction = "up";
         this.moving = true;
       }
-      else if(player.direction == "left"){
+      else if(player.direction == "left" && this.currentCell[0] != -1){
         this.currentCell[0] -= 1;
         this.direction = "left";
         this.moving = true;
@@ -32,9 +32,8 @@ class Block extends Entity {
         ++this.currentCell[0];
         this.direction = "right";
         this.moving = true;
-      }
+      } 
     }
-    
     //If moving the block moves towards the target cell.
     if(this.moving){
       this.moveTo();
@@ -45,6 +44,7 @@ class Block extends Entity {
   
   //temp render until there are assets
   public void render(){
+    noStroke();
     fill(255);
     PVector pos = this.getPos();
     PVector dimensions = this.getDimensions();

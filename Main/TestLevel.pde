@@ -13,9 +13,9 @@ class Test extends Scene {
     createGrid(); //Creates the grid
     
     Objects.add(new Wall(new int[] {2, 0}, gridSize));
-    Objects.add(new Wall(new int[] {3, 1}, gridSize));
-    Objects.add(new Wall(new int[] {1, 2}, gridSize));
-    Objects.add(new Block(new int[] {3, 2}, gridSize));
+    //Objects.add(new Wall(new int[] {3, 1}, gridSize));
+   // Objects.add(new Wall(new int[] {1, 2}, gridSize));
+    Objects.add(new Block(new int[] {2, 2}, gridSize));
     Objects.add(player);
     
     updateGrid();
