@@ -1,11 +1,11 @@
 //The following is the code for the movable block. The block can be pushed by any entity, given that it can move in that direction. The block, unlike the entity cant be pushed into a wall. 
 
-class Block extends Entity {
+class Person extends Entity {
   
   int[] cellToMove; //This variable contains the cell the block should move to if it is ever pushed.
   
-  public Block(int[] pos, int[] gridSize){
-    super(pos, gridSize, new PVector(windowSize[0]/gridSize[0]*0.75, windowSize[1]/gridSize[1]*0.75)); //the block is 75% of the size of a cell
+  public Person(int[] pos, int[] gridSize){
+    super(pos, gridSize, new PVector(windowSize[0]/gridSize[0]*0.5, windowSize[1]/gridSize[1]*0.5)); //the block is 75% of the size of a cell
     this.cellToMove = this.currentCell;
     this.stationary = new boolean[] {false, false, false, false};
   }
@@ -27,6 +27,10 @@ class Block extends Entity {
     fill(255);
     PVector pos = this.getPos();
     PVector dimensions = this.getDimensions();
-    rect(pos.x - (dimensions.x/2), pos.y - (dimensions.y/2), dimensions.x, dimensions.y);
+    float factor = dimensions.x/2;
+    PVector p1 = new PVector(pos.x-factor, pos.y+factor);
+    PVector p2 = new PVector(pos.x+dimensions.x-factor, pos.y+factor);
+    PVector p3 = new PVector(pos.x+(dimensions.x/2-factor), pos.y-dimensions.y+factor);
+    triangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
   }
 }

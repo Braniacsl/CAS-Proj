@@ -8,9 +8,10 @@ class Wall extends gridObject{
     this.currentCell = gridPos;
     this.dimensions = new PVector(windowSize[0]/gridSize[0], windowSize[1]/gridSize[1]);
     this.pos = this.calculatePos(gridPos);
+    stationary = new boolean[] {true, true, true, true};
   }
   
-  public void update(){
+  public void update(boolean in){
     return;
   }
   public void render(){

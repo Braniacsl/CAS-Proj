@@ -22,5 +22,7 @@ void draw(){
 } 
 
 void keyPressed(){
-  SceneManager.keyPressed(key+""); //Sends any key press to the scenemanager
+  String keyhee = key + "";
+  if(keyhee.equals("w") || keyhee.equals("s") || keyhee.equals("a") || keyhee.equals("d"))
+    SceneManager.keyPressed(keyhee); //Sends any key press to the scenemanager
 }

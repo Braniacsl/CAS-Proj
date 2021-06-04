@@ -34,11 +34,10 @@ abstract class Entity extends gridObject{ // The aforemention class
     return this.dimensions;
   }
   
-  public PVector velocity = new PVector(0, 0);//The velocity of the entity
   public float vMax; //vMax is the maximum velocity the entity can move between squares. It reaches this halfway to its destination
   private float vRate; //vRate is the rate at which the entity accelerates to max and decelerates to 0
   
-  private final float timeToNextSquare = 0.4f*frames; //This is used in calculations for velocity of the entity. The time that it takes is the constant shown, however we need to multiply by "frames" because the game is ran "frames" times per second
+  private final float timeToNextSquare = 0.3f*frames; //This is used in calculations for velocity of the entity. The time that it takes is the constant shown, however we need to multiply by "frames" because the game is ran "frames" times per second
   
   //The constructor for the entity object. We take in position, gridSize and dimensions of the entity. The position here is the cell the player is in, not the actual position. That is later calculated using this parameter.
   public Entity(int[] pos, int[] gridSize, PVector dimensions){
@@ -74,18 +73,7 @@ abstract class Entity extends gridObject{ // The aforemention class
     float[] steps = new float[] {windowSize[0]/gridSize[0], windowSize[1]/gridSize[1]}; //This  calculates the distance between grid cells.
     switch(this.direction){
       case "down":
-        if(this.getPos().y >= (steps[1]*(this.currentCell[1]))-((steps[1]-this.getDimensions().y)/2)-this.vRate && !this.passable()){
-      
-            //The way that the entity reverses is it changes its current direction. If the player had to enter this case even though it hit a wall, it would be more complicated than simply reversing the direction and setting the velocity to max since it is halway
-            //It also resets the currentCell
-            //this.pos.y = (steps[1]*(this.currentCell[1]))-((steps[1]-this.getDimensions().y)/2);
-            //this.velocity.y = (float) (-1*Math.sqrt((double)(2*this.vRate*((steps[1]/2)-(steps[1]-this.getDimensions().y)/2) ) ) ); //get velocity from acceleration and distance
-            this.velocity.y = -this.velocity.y;
-            this.currentCell[1]--;
-            this.direction = "up";
-
-        }
-        else if(this.getPos().y < (steps[1]*(this.currentCell[1]))){ // This if checks if the entity is behind the halfway mark to its destination, and if so increases the velocity up to max.
+        if(this.getPos().y < (steps[1]*(this.currentCell[1]))){ // This if checks if the entity is behind the halfway mark to its destination, and if so increases the velocity up to max.
           this.velocity.y = this.velocity.y + this.vRate < this.vMax ? this.velocity.y+this.vRate: this.vMax; //This line says that the velocity will increase down unless that increase would put it over the max. If it is, then it simply becomes the max.
           //this is done because vRate may not always be a multiple of vMax, which means that vRate may go over vMax, which would break things, and as such we need to set a hard limit.
           //P.S. It would break things because if velocity goes over vMax the else below may not set velocity to 0 and thus the object would keep moving, or it would decrease to 0 but not be in the middle but slightly to the side. This matters because this error
@@ -93,77 +81,118 @@ abstract class Entity extends gridObject{ // The aforemention class
         }
         else{ //This if is entered once the entity is in the second half of movement, and thus decreases velocity to 0.
           //This else is for when the entity is in the second half but hasnt hit an immovable wall
-          if(this.passable()){
-            this.velocity.y = this.velocity.y - this.vRate > 0 ? this.velocity.y-this.vRate: 0; //This does the same as the matching line above, except it decelerates the object.
-            if(this.velocity.y == 0){ //This if checks when the player is done with movement and if so resets the variables used in movement.
-              this.moving = false;
-              this.direction = "";
-            }
+          this.velocity.y = this.velocity.y - this.vRate > 0 ? this.velocity.y-this.vRate: 0; //This does the same as the matching line above, except it decelerates the object.
+          if(this.velocity.y == 0){ //This if checks when the player is done with movement and if so resets the variables used in movement.
+            this.moving = false;
           }
         }
       break;
       //For the following cases refer to the comments above
       case "up":
-      if(this.getPos().y <= (steps[1]*(this.currentCell[1]+1))+(steps[1]/2-this.dimensions.y/2)+this.vRate && !this.passable()){
-            //this.pos.y = (steps[1]*(this.currentCell[1]+1))-((steps[1]-this.getDimensions().y)/2);
-            //this.velocity.y = (float) (Math.sqrt((double)(2*this.vRate*((steps[1]/2)-(steps[1]-this.getDimensions().y)/2) ) ) ); //get velocity from acceleration and distance
-            this.velocity.y = -this.velocity.y;
-            this.currentCell[1]++;
-            this.direction = "down";
 
-        }
-        else if(this.getPos().y > (steps[1]*(this.currentCell[1]+1))){
+        if(this.getPos().y > (steps[1]*(this.currentCell[1]+1))){
           this.velocity.y = this.velocity.y - this.vRate > -this.vMax ? this.velocity.y-this.vRate: -this.vMax;
         }
         else {
             this.velocity.y = this.velocity.y + this.vRate < 0 ? this.velocity.y+this.vRate: 0;
             if(this.velocity.y == 0){
               this.moving = false;
-              this.direction = "";
             }
         }
       break;
       case "left":
-        if(this.getPos().x <= (steps[0]*(this.currentCell[0]+1))+(steps[0]/2-this.dimensions.x/2)+this.vRate && !this.passable()){
-            //this.pos.x = (steps[0]*(this.currentCell[0]+1))-((steps[1]-this.getDimensions().y)/2);
-            //this.velocity.x = (float) (Math.sqrt((double)(2*this.vRate*((steps[0]/2)-(steps[0]-this.getDimensions().x)/2) ) ) ); //get velocity from acceleration and distance
-            this.velocity.x = -this.velocity.x;
-            this.currentCell[0]++;
-            this.direction = "right";
-
-        }
-        else if(this.getPos().x > (steps[0]*(this.currentCell[0]+1))){
+        if(this.getPos().x > (steps[0]*(this.currentCell[0]+1))){
           this.velocity.x = this.velocity.x - this.vRate > -this.vMax ? this.velocity.x-this.vRate: -this.vMax;
         }
         else {
             this.velocity.x = this.velocity.x + this.vRate < 0 ? this.velocity.x+this.vRate: 0;
             if(this.velocity.x == 0){
               this.moving = false;
-              this.direction = "";
             }
         }
       break;
       case "right":
-      if(this.getPos().x >= (steps[0]*(this.currentCell[0]))-((steps[0]-this.getDimensions().x)/2)-this.vRate && !this.passable()){
-      
-            //The way that the entity reverses is it changes its current direction. If the player had to enter this case even though it hit a wall, it would be more complicated than simply reversing the direction and setting the velocity to max since it is halway
-            //It also resets the currentCell
-            //this.pos.x = (steps[0]*(this.currentCell[0]))-((steps[0]-this.getDimensions().x)/2);
-            //this.velocity.x = (float) (-1*Math.sqrt((double)(2*this.vRate*((steps[0]/2)-(steps[1]-this.getDimensions().x)/2) ) ) ); //get velocity from acceleration and distance
-            this.velocity.x = -this.velocity.x;
-            this.currentCell[0]--;
-            this.direction = "left";
-
-        }
-        else if(this.getPos().x < (steps[0]*(this.currentCell[0]+1))-(steps[0])){
+        if(this.getPos().x < (steps[0]*(this.currentCell[0]+1))-(steps[0])){
           this.velocity.x = this.velocity.x + this.vRate < this.vMax ? this.velocity.x+this.vRate: this.vMax;
         }
         else {
             this.velocity.x = this.velocity.x - this.vRate > 0 ? this.velocity.x-this.vRate: 0;
             if(this.velocity.x == 0){
               this.moving = false;
-              this.direction = "";
             }
+        }
+      break;
+    }
+  } 
+  public void halfMove() {
+  
+    //This switch basically does the same thing for each direction. What it does is it checks if the player is half way to the next cell if not, it adds velocity until it reaches a maximum, at which point it starts decreasing. It alo reverses the entity if
+    //it hits an immovable wall.
+    //Note: ternary operators are used just so that the value cant go over vMax
+    float[] steps = new float[] {windowSize[0]/gridSize[0], windowSize[1]/gridSize[1]}; //This  calculates the distance between grid cells.
+    float dist = (steps[0]) - (this.dimensions.x);
+    switch(this.direction){
+      case "down":
+        if(this.getPos().y < ((steps[1]*(this.currentCell[1]+1)) - dist) - this.vRate && this.velocity.y >= 0){ // This if checks if the entity is behind the halfway mark to its destination, and if so increases the velocity up to max.
+          this.velocity.y = this.velocity.y + this.vRate < this.vMax ? this.velocity.y+this.vRate: this.vMax; //This line says that the velocity will increase down unless that increase would put it over the max. If it is, then it simply becomes the max.
+          //this is done because vRate may not always be a multiple of vMax, which means that vRate may go over vMax, which would break things, and as such we need to set a hard limit.
+          //P.S. It would break things because if velocity goes over vMax the else below may not set velocity to 0 and thus the object would keep moving, or it would decrease to 0 but not be in the middle but slightly to the side. This matters because this error
+          //can add up.
+        }
+        else{ //This if is entered once the entity is in the second half of movement, and thus decreases velocity to 0.
+          //This else is for when the entity is in the second half but hasnt hit an immovable wall
+          if(this.velocity.y > 0)
+            this.velocity.y = -this.velocity.y;
+          else
+            this.velocity.y = this.velocity.y + this.vRate < 0 ? this.velocity.y+this.vRate: 0; //This does the same as the matching line above, except it decelerates the object.
+          if(this.velocity.y == 0){ //This if checks when the player is done with movement and if so resets the variables used in movement.
+            this.moving = false;
+          }
+        }
+      break;
+      //For the following cases refer to the comments above
+      case "up":
+        if(this.getPos().y > ((steps[1]*(this.currentCell[1])) + dist) + this.vRate && this.velocity.y <= 0){
+          this.velocity.y = this.velocity.y - this.vRate > -this.vMax ? this.velocity.y-this.vRate: -this.vMax; 
+        }
+        else{
+          if(this.velocity.y < 0){
+            this.velocity.y = -this.velocity.y;
+          }
+          else
+            this.velocity.y = this.velocity.y - this.vRate > 0 ? this.velocity.y-this.vRate: 0;
+          if(this.velocity.y == 0){
+            this.moving = false;
+          }
+        }
+      break;
+      case "left":
+        if(this.getPos().x > ((steps[0]*(this.currentCell[0])) + dist) + this.vRate && this.velocity.x <= 0){
+          this.velocity.x = this.velocity.x - this.vRate > -this.vMax ? this.velocity.x-this.vRate: -this.vMax; 
+        }
+        else{
+          if(this.velocity.x < 0){
+            this.velocity.x = -this.velocity.x;
+          }
+          else
+            this.velocity.x = this.velocity.x - this.vRate > 0 ? this.velocity.x-this.vRate: 0;
+          if(this.velocity.x == 0){
+            this.moving = false;
+          }
+        }
+      break;
+      case "right":
+        if(this.getPos().x < ((steps[0]*(this.currentCell[0]+1)) - dist) - this.vRate && this.velocity.x >= 0){
+          this.velocity.x = this.velocity.x + this.vRate < this.vMax ? this.velocity.x+this.vRate: this.vMax;
+        }
+        else{
+          if(this.velocity.x > 0)
+            this.velocity.x = -this.velocity.x;
+          else
+            this.velocity.x = this.velocity.x + this.vRate < 0 ? this.velocity.x+this.vRate: 0;
+          if(this.velocity.x == 0){
+            this.moving = false;
+          }
         }
       break;
     }
